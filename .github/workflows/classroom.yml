@@ -1,0 +1,115 @@
+name: Autograding Tests
+on:
+  workflow_dispatch:
+  repository_dispatch:
+permissions:
+  checks: write
+  actions: read
+  contents: read
+jobs:
+  run-autograding-tests:
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-classroom[bot]'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: test-branching-01
+        id: test-branching-01
+        uses: classroom-resources/autograding-io-grader@v1
+        with:
+          test-name: test-branching-01
+          setup-command: make compile
+          command: make -s test
+          input: |
+            4
+            7
+          expected-output: |
+            Bilangan pertama: Genap
+            Bilangan kedua: Ganjil
+            Bilangan kedua lebih besar
+            Berbeda jenis
+          comparison-method: exact
+          timeout: 2
+          max-score: 20
+      - name: test-branching-02
+        id: test-branching-02
+        uses: classroom-resources/autograding-io-grader@v1
+        with:
+          test-name: test-branching-02
+          setup-command: make compile
+          command: make -s test
+          input: |
+            6
+            2
+          expected-output: |
+            Bilangan pertama: Genap
+            Bilangan kedua: Genap
+            Bilangan pertama lebih besar
+            Hasil penjumlahan: 8
+          comparison-method: exact
+          timeout: 2
+          max-score: 20
+      - name: test-branching-03
+        id: test-branching-03
+        uses: classroom-resources/autograding-io-grader@v1
+        with:
+          test-name: test-branching-03
+          setup-command: make compile
+          command: make -s test
+          input: |
+            5
+            5
+          expected-output: |
+            Bilangan pertama: Ganjil
+            Bilangan kedua: Ganjil
+            Kedua bilangan sama besar
+            Hasil perkalian: 25
+          comparison-method: exact
+          timeout: 2
+          max-score: 20
+      - name: test-branching-04
+        id: test-branching-04
+        uses: classroom-resources/autograding-io-grader@v1
+        with:
+          test-name: test-branching-04
+          setup-command: make compile
+          command: make -s test
+          input: |
+            2
+            8
+          expected-output: |
+            Bilangan pertama: Genap
+            Bilangan kedua: Genap
+            Bilangan kedua lebih besar
+            Hasil penjumlahan: 10
+          comparison-method: exact
+          timeout: 2
+          max-score: 20
+      - name: test-branching-05
+        id: test-branching-05
+        uses: classroom-resources/autograding-io-grader@v1
+        with:
+          test-name: test-branching-05
+          setup-command: make compile
+          command: make -s test
+          input: |
+            9
+            4
+          expected-output: |
+            Bilangan pertama: Ganjil
+            Bilangan kedua: Genap
+            Bilangan pertama lebih besar
+            Berbeda jenis
+          comparison-method: exact
+          timeout: 2
+          max-score: 20
+      - name: Autograding Reporter
+        uses: classroom-resources/autograding-grading-reporter@v1
+        env:
+          TEST-BRANCHING-01_RESULTS: "${{steps.test-branching-01.outputs.result}}"
+          TEST-BRANCHING-02_RESULTS: "${{steps.test-branching-02.outputs.result}}"
+          TEST-BRANCHING-03_RESULTS: "${{steps.test-branching-03.outputs.result}}"
+          TEST-BRANCHING-04_RESULTS: "${{steps.test-branching-04.outputs.result}}"
+          TEST-BRANCHING-05_RESULTS: "${{steps.test-branching-05.outputs.result}}"
+        with:
+          runners: test-branching-01,test-branching-02,test-branching-03,test-branching-04,test-branching-05
